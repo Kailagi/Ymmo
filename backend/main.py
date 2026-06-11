@@ -84,6 +84,17 @@ def get_all_agences():
     conn.close()
     return agences
 
+@app.get("/api/admin/analytics/dashboard")
+def get_ai_dashboard():
+    """Endpoint Admin : Récupère les KPI globaux du marché et les coefficients de l'IA"""
+    try:
+        data = ai_engine.get_admin_dashboard_data()
+        if "error" in data:
+            raise HTTPException(status_code=400, detail=data["error"])
+        return {"status": "success", "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur Dashboard : {str(e)}")
+
 @app.post("/api/analytics/predict")
 def predict_price(data: PropertyEstimateInput):
     """Endpoint IA : Calcule l'estimation d'un prix pour l'outil d'évaluation du Front"""
